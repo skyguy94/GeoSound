@@ -1,0 +1,10 @@
+syntax: glob
+_ReSharper.*/**
+Debug/**
+*.ncrunch*
+*.sdf
+*.opensdf
+*.DotSettings
+*.suo
+Generated Files/**
+ipch/**

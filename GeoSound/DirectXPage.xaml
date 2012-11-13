@@ -5,10 +5,9 @@
     xmlns:local="using:GeoSound"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    PointerMoved="OnPointerMoved" PointerReleased="OnPointerReleased"
-    >
-    <SwapChainBackgroundPanel x:Name="SwapChainPanel" PointerMoved="OnPointerMoved" PointerReleased="OnPointerReleased">
+    mc:Ignorable="d">
+   
+    <SwapChainBackgroundPanel x:Name="SwapChainPanel" PointerPressed="OnPointerPressed" PointerMoved="OnPointerMoved" PointerReleased="OnPointerReleased">
         <Grid Width="400" Height="400">
             <Grid.RowDefinitions>
                 <RowDefinition/>

@@ -32,9 +32,10 @@
     <ClCompile Include="DirectXPage.xaml.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="WaveRenderer.cpp" />
-    <ClCompile Include="ManagedAudioManager.cpp" />
-    <ClCompile Include="ManagedSineWaveOscillator.cpp" />
-    <ClCompile Include="ManagedMixer.cpp" />
+    <ClCompile Include="SineWaveOscillator.cpp" />
+    <ClCompile Include="AudioManager.cpp" />
+    <ClCompile Include="Mixer.cpp" />
+    <ClCompile Include="SoundPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -46,9 +47,10 @@
     <ClInclude Include=".\Oscillator.h" />
     <ClInclude Include="WaveRenderer.h" />
     <ClInclude Include="IndividualSound.h" />
-    <ClInclude Include="ManagedAudioManager.h" />
-    <ClInclude Include="ManagedSineWaveOscillator.h" />
-    <ClInclude Include="ManagedMixer.h" />
+    <ClInclude Include="SineWaveOscillator.h" />
+    <ClInclude Include="AudioManager.h" />
+    <ClInclude Include="Mixer.h" />
+    <ClInclude Include="SoundPlayer.h" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest" />

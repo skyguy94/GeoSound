@@ -3,25 +3,25 @@
 #include "Oscillator.h"
 #include "IndividualSound.h"
 
-ref class ManagedAudioManager sealed
+class AudioManager
 {
 public:
-	ManagedAudioManager(void);
-	virtual ~ManagedAudioManager();
+	AudioManager(void);
+	virtual ~AudioManager();
 
 	void Initialize(void);
 
-	void AddSound(IOscillator ^sound);
-	void RemoveSound(IOscillator ^sound);
+	void AddSound(std::unique_ptr<IOscillator> sound);
+	void RemoveSound(std::unique_ptr<IOscillator> sound);
 	void ClearSounds();
 
-	Windows::Foundation::Collections::IVector<int16>^ GetAudioGraph();
+	std::vector<int16> GetAudioGraph();
 
 private:
 	Microsoft::WRL::ComPtr<IXAudio2> XAudio2;
 	IXAudio2MasteringVoice* pMasterVoice;
 
-	Platform::Collections::Vector<IOscillator^> ^oscillators;
+	std::vector<std::unique_ptr<IOscillator>> oscillators;
 	std::vector<std::unique_ptr<IndividualSound>> sounds;
 
 	void UpdateMixerState(void);

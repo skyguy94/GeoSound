@@ -107,9 +107,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="IndividualSound.h" />
-    <ClInclude Include="ManagedAudioManager.h" />
-    <ClInclude Include="ManagedSineWaveOscillator.h" />
-    <ClInclude Include="ManagedMixer.h" />
+    <ClInclude Include="AudioManager.h" />
+    <ClInclude Include="SineWaveOscillator.h" />
+    <ClInclude Include="Mixer.h" />
     <ClInclude Include=".\Oscillator.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="App.xaml.h">
@@ -118,6 +118,7 @@
     <ClInclude Include="DirectXPage.xaml.h">
       <DependentUpon>DirectXPage.xaml</DependentUpon>
     </ClInclude>
+    <ClInclude Include="SoundPlayer.h" />
     <ClInclude Include="WaveRenderer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -149,9 +150,9 @@
     <ClInclude Include="DirectXBase.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ManagedAudioManager.cpp" />
-    <ClCompile Include="ManagedSineWaveOscillator.cpp" />
-    <ClCompile Include="ManagedMixer.cpp" />
+    <ClCompile Include="AudioManager.cpp" />
+    <ClCompile Include="SineWaveOscillator.cpp" />
+    <ClCompile Include="Mixer.cpp" />
     <ClCompile Include="DirectXBase.cpp" />
     <ClCompile Include="App.xaml.cpp">
       <DependentUpon>App.xaml</DependentUpon>
@@ -162,6 +163,7 @@
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="SoundPlayer.cpp" />
     <ClCompile Include="WaveRenderer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

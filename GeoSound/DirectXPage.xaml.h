@@ -7,14 +7,13 @@
 namespace GeoSound
 {
     [Windows::Foundation::Metadata::WebHostHidden]
-	public ref class DirectXPage sealed
+	private ref class DirectXPage sealed
 	{
 	public:
 		DirectXPage();
 		virtual ~DirectXPage();
 
 	private:
-
 		void OnPointerPressed(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ args);
 		void OnPointerMoved(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ args);
 		void OnPointerReleased(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ args);
@@ -28,7 +27,7 @@ namespace GeoSound
 
 		Windows::Foundation::EventRegistrationToken m_eventToken;
 		WaveRenderer^ m_renderer;
-		ManagedAudioManager^ audioManager_;
+		std::unique_ptr<AudioManager> audioManager_;
 
 		bool m_renderNeeded;
 

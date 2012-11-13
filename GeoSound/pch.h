@@ -13,4 +13,5 @@
 #include <xapofx.h>
 #include <algorithm>
 #include <collection.h>
+#include <math.h>
 #include "App.xaml.h"

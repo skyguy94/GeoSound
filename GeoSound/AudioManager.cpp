@@ -1,22 +1,22 @@
 #include "pch.h"
 #include "Oscillator.h"
-#include "ManagedAudioManager.h"
+#include "AudioManager.h"
 #include "IndividualSound.h"
-#include "ManagedMixer.h"
+#include "Mixer.h"
 
 using std::unique_ptr;
 using std::vector;
 
+using namespace Platform;
 using namespace Platform::Collections;
 using namespace Windows::Foundation::Collections;
 
-ManagedAudioManager::ManagedAudioManager(void)
+AudioManager::AudioManager(void)
 	: pMasterVoice(nullptr)
 {
-	oscillators = ref new Vector<IOscillator^>();
 }
 
-ManagedAudioManager::~ManagedAudioManager()
+AudioManager::~AudioManager()
 {
 	if (pMasterVoice != nullptr)
 	{
@@ -25,7 +25,7 @@ ManagedAudioManager::~ManagedAudioManager()
 	}
 }
 
-void ManagedAudioManager::Initialize(void)
+void AudioManager::Initialize(void)
 {
 	HRESULT hr = XAudio2Create(&XAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR);
 	if (FAILED(hr)) throw Platform::Exception::CreateException(hr);
@@ -34,7 +34,7 @@ void ManagedAudioManager::Initialize(void)
 	if (FAILED(hr)) throw Platform::Exception::CreateException(hr);
 }
 
-void ManagedAudioManager::AddSound(IOscillator ^oscillator)
+void AudioManager::AddSound(unique_ptr<IOscillator> oscillator)
 {
 	auto sound(unique_ptr<IndividualSound>(new IndividualSound()));
 	
@@ -51,38 +51,39 @@ void ManagedAudioManager::AddSound(IOscillator ^oscillator)
 	HRESULT hr = XAudio2->CreateSourceVoice(&sound->Output, &wfx);
 	if (FAILED(hr)) throw Platform::Exception::CreateException(hr);
 
-	sound->Buffer = oscillator->GenerateSample(1.0f, 44100);
+	auto sample = oscillator->GenerateSample(1.0f, 44100);
 
 	XAUDIO2_BUFFER buffer;
 	ZeroMemory(&buffer, sizeof(XAUDIO2_BUFFER));
 	buffer.LoopCount = XAUDIO2_MAX_LOOP_COUNT;
-	buffer.AudioBytes = sound->Buffer->Size * 2;
-	buffer.pAudioData = (BYTE *)&sound->Buffer;
+	buffer.AudioBytes = sound->Buffer.size() * 2;
+
+	buffer.pAudioData = (BYTE *)&sound->Buffer[0];
 
 	hr = sound->Output->SubmitSourceBuffer(&buffer);
 	if (FAILED(hr)) throw Platform::Exception::CreateException(hr);
 
 	sounds.push_back(move(sound));
-	oscillators->Append(oscillator);
+	oscillators.push_back(oscillator);
 
 	std::for_each(sounds.begin(), sounds.end(), [](unique_ptr<IndividualSound>& i){ i->Output->Start(); });
 }
 
-void ManagedAudioManager::RemoveSound(IOscillator ^sound)
+void AudioManager::RemoveSound(std::unique_ptr<IOscillator> sound)
 {
 }
 
-void ManagedAudioManager::ClearSounds()
+void AudioManager::ClearSounds()
 {
 	std::for_each(sounds.begin(), sounds.end(), [](unique_ptr<IndividualSound>& i){ i->Output->Stop(); });
 
-	oscillators->Clear();
+	oscillators.clear();
 	sounds.clear();
 }
 
-IVector<int16>^ ManagedAudioManager::GetAudioGraph()
+std::vector<int16> AudioManager::GetAudioGraph()
 {
-	ManagedMixer mixer;
+	Mixer mixer;
 	auto graph(mixer.MixToStream(oscillators, 44100));
 	return graph;
 }

@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
-#include "ManagedSineWaveOscillator.h"
-#include "ManagedAudioManager.h"
+#include "SineWaveOscillator.h"
+#include "AudioManager.h"
 #include "DirectXPage.xaml.h"
 
 using std::unique_ptr;
@@ -23,14 +23,13 @@ using namespace Windows::Graphics::Display;
 DirectXPage::DirectXPage() :
 	m_renderNeeded(true),
 	m_lastPointValid(false),
-	audioManager_(ref new ManagedAudioManager())
+	audioManager_(new AudioManager())
 {
 	InitializeComponent();
 
-	m_renderer = ref new WaveRenderer(audioManager_);
+	m_renderer = ref new WaveRenderer(audioManager_.get());
 
-	m_renderer->Initialize(
-Window::Current->CoreWindow, SwapChainPanel, DisplayProperties::LogicalDpi);
+	m_renderer->Initialize(Window::Current->CoreWindow, SwapChainPanel, DisplayProperties::LogicalDpi);
 
 	Window::Current->CoreWindow->SizeChanged += ref new TypedEventHandler<CoreWindow^, WindowSizeChangedEventArgs^>(this, &DirectXPage::OnWindowSizeChanged);
 	DisplayProperties::LogicalDpiChanged += ref new DisplayPropertiesEventHandler(this, &DirectXPage::OnLogicalDpiChanged);
@@ -44,15 +43,29 @@ Window::Current->CoreWindow, SwapChainPanel, DisplayProperties::LogicalDpi);
 DirectXPage::~DirectXPage()
 { }
 
+void DirectXPage::OnPointerPressed(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ args)
+{
+	m_lastPointValid = true;
+	auto currentPoint = args->GetCurrentPoint(this);
+
+	auto isOver = m_renderer->HitTest(currentPoint->Position);
+	if (isOver)
+	{
+		audioManager_->AddSound(unique_ptr<IOscillator>(new SineWaveOscillator(440, 100)));
+	}
+
+	m_renderer->StartLine(currentPoint->Position);
+	m_renderNeeded = true;
+}
+
 void DirectXPage::OnPointerMoved(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ args)
 {
-	auto currentPoint = args->GetCurrentPoint(nullptr);
+	auto currentPoint = args->GetCurrentPoint(this);
 	if (currentPoint->IsInContact)
 	{
 		if (m_lastPointValid)
 		{
-			Windows::Foundation::Point delta(currentPoint->Position.X - m_lastPoint.X,currentPoint->Position.Y - m_lastPoint.Y);
-			m_renderer->UpdateTextPosition(delta);
+			m_renderer->UpdateLinePosition(currentPoint->RawPosition);
 			m_renderNeeded = true;
 		}
 		m_lastPoint = currentPoint->Position;
@@ -66,7 +79,13 @@ void DirectXPage::OnPointerMoved(Platform::Object^ sender, Windows::UI::Xaml::In
 
 void DirectXPage::OnPointerReleased(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ args)
 {
+	m_lastPointValid = true;
+	auto currentPoint = args->GetCurrentPoint(this);
+
+	m_renderer->EndLine(currentPoint->Position);
+
 	m_lastPointValid = false;
+	m_renderNeeded = true;
 }
 
 void DirectXPage::OnWindowSizeChanged(CoreWindow^ sender, WindowSizeChangedEventArgs^ args)
@@ -98,26 +117,25 @@ void GeoSound::DirectXPage::Button_PointerReleased_1(Platform::Object^ sender, W
 	m_renderNeeded = true;
 }
 
-
 void GeoSound::DirectXPage::Button_PointerPressed_1(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e)
 {
 	Rectangle^rect = dynamic_cast<Rectangle^>(sender); 
 	if (rect->Name == "A4")
 	{
-		audioManager_->AddSound(ref new ManagedSineWaveOscillator(440, 100));
+		audioManager_->AddSound(unique_ptr<IOscillator>(new SineWaveOscillator(440, 100)));
 	}
 	else
 	if (rect->Name == "D4")
 	{
-		audioManager_->AddSound(ref new ManagedSineWaveOscillator(440, 100));
-		audioManager_->AddSound(ref new ManagedSineWaveOscillator(600, 100));
+		audioManager_->AddSound(unique_ptr<IOscillator>(new SineWaveOscillator(440, 100)));
+		audioManager_->AddSound(unique_ptr<IOscillator>(new SineWaveOscillator(600, 100)));
 	}
 	else
 	if (rect->Name == "F4")
 	{
-		audioManager_->AddSound(ref new ManagedSineWaveOscillator(440, 100));
-		audioManager_->AddSound(ref new ManagedSineWaveOscillator(600, 100));
-		audioManager_->AddSound(ref new ManagedSineWaveOscillator(780, 100));
+		audioManager_->AddSound(unique_ptr<IOscillator>(new SineWaveOscillator(440, 100)));
+		audioManager_->AddSound(unique_ptr<IOscillator>(new SineWaveOscillator(600, 100)));
+		audioManager_->AddSound(unique_ptr<IOscillator>(new SineWaveOscillator(780, 100)));
 	}
 	m_renderNeeded = true;
 }
