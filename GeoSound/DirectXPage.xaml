@@ -8,36 +8,59 @@
     mc:Ignorable="d">
    
     <SwapChainBackgroundPanel x:Name="SwapChainPanel" PointerPressed="OnPointerPressed" PointerMoved="OnPointerMoved" PointerReleased="OnPointerReleased">
-        <Grid Width="400" Height="400">
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <Rectangle x:Name="G3" Grid.Row="0" Grid.Column="0" Width="100" Height="100" PointerPressed="Button_PointerPressed_1" PointerReleased="Button_PointerReleased_1" Fill="Red"/>
-            <TextBlock Grid.Row="0" Grid.Column="0" Text="G3" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black"/>
-            <Rectangle x:Name="A4" Grid.Row="0" Grid.Column="1" Width="100" Height="100" PointerPressed="Button_PointerPressed_1" PointerReleased="Button_PointerReleased_1" Fill="Orange"/>
-            <TextBlock Grid.Row="0" Grid.Column="1" Text="A4" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black"/>
-            <Rectangle x:Name="B4" Grid.Row="0" Grid.Column="2" Width="100" Height="100" PointerPressed="Button_PointerPressed_1" PointerReleased="Button_PointerReleased_1" Fill="Yellow"/>
-            <TextBlock Grid.Row="0" Grid.Column="2" Text="B4" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black"/>
-            <Rectangle x:Name="C4" Grid.Row="1" Grid.Column="0" Width="100" Height="100" PointerPressed="Button_PointerPressed_1" PointerReleased="Button_PointerReleased_1" Fill="Green"/>
-            <TextBlock Grid.Row="1" Grid.Column="0" Text="C4" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black"/>
-            <Rectangle x:Name="D4" Grid.Row="1" Grid.Column="1" Width="100" Height="100" PointerPressed="Button_PointerPressed_1" PointerReleased="Button_PointerReleased_1" Fill="Blue"/>
-            <TextBlock Grid.Row="1" Grid.Column="1" Text="D4" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"/>
-            <Rectangle x:Name="E4" Grid.Row="1" Grid.Column="2" Width="100" Height="100" PointerPressed="Button_PointerPressed_1" PointerReleased="Button_PointerReleased_1" Fill="Indigo"/>
-            <TextBlock Grid.Row="1" Grid.Column="2" Text="E4" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"/>
-            <Rectangle x:Name="F4" Grid.Row="2" Grid.Column="0" Width="100" Height="100" PointerPressed="Button_PointerPressed_1" PointerReleased="Button_PointerReleased_1" Fill="Violet"/>
-            <TextBlock Grid.Row="2" Grid.Column="0" Text="F4" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black"/>
-            <Rectangle x:Name="G4" Grid.Row="2" Grid.Column="1" Width="100" Height="100" PointerPressed="Button_PointerPressed_1" PointerReleased="Button_PointerReleased_1" Fill="White"/>
-            <TextBlock Grid.Row="2" Grid.Column="1" Text="G4" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black"/>
-            <Rectangle x:Name="A5" Grid.Row="2" Grid.Column="2" Width="100" Height="100" PointerPressed="Button_PointerPressed_1" PointerReleased="Button_PointerReleased_1" Fill="Purple"/>
-            <TextBlock Grid.Row="2" Grid.Column="2" Text="A5" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"/>
-        </Grid>
+        <Border BorderBrush="Gray">
+            <Grid Width="400" Height="400" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                <Rectangle Fill="LightBlue"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid x:Name="G3" Grid.Row="0" Grid.Column="0" Width="100" Height="100" PointerPressed="Button_PointerPressed_1" PointerReleased="Button_PointerReleased_1">
+                        <Rectangle Fill="Red"/>
+                        <TextBlock Text="G3" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black"/>
+                    </Grid>
+                    <Grid x:Name="A4" Grid.Row="0" Grid.Column="1" Width="100" Height="100" PointerPressed="Button_PointerPressed_1" PointerReleased="Button_PointerReleased_1">
+                        <Rectangle Fill="Orange"/>
+                        <TextBlock Text="A4" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black"/>
+                    </Grid>
+                    <Grid x:Name="B4" Grid.Row="0" Grid.Column="2" Width="100" Height="100" PointerPressed="Button_PointerPressed_1" PointerReleased="Button_PointerReleased_1">
+                        <Rectangle Fill="Yellow"/>
+                        <TextBlock Text="B4" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black"/>
+                    </Grid>
+                    <Grid x:Name="C4" Grid.Row="1" Grid.Column="0" Width="100" Height="100" PointerPressed="Button_PointerPressed_1" PointerReleased="Button_PointerReleased_1">
+                        <Rectangle Fill="Green"/>
+                        <TextBlock Text="C4" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black"/>
+                    </Grid>
+                    <Grid x:Name="D4" Grid.Row="1" Grid.Column="1" Width="100" Height="100" PointerPressed="Button_PointerPressed_1" PointerReleased="Button_PointerReleased_1">
+                        <Rectangle Fill="Blue"/>
+                        <TextBlock Text="D4" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"/>
+                    </Grid>
+                    <Grid x:Name="E4" Grid.Row="1" Grid.Column="2" Width="100" Height="100" PointerPressed="Button_PointerPressed_1" PointerReleased="Button_PointerReleased_1">
+                        <Rectangle Fill="Indigo"/>
+                        <TextBlock Text="E4" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"/>
+                    </Grid>
+                    <Grid x:Name="F4" Grid.Row="2" Grid.Column="0" Width="100" Height="100" PointerPressed="Button_PointerPressed_1" PointerReleased="Button_PointerReleased_1">
+                        <Rectangle Fill="Violet"/>
+                        <TextBlock Text="F4" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black"/>
+                    </Grid>
+                    <Grid x:Name="G4" Grid.Row="2" Grid.Column="1" Width="100" Height="100" PointerPressed="Button_PointerPressed_1" PointerReleased="Button_PointerReleased_1">
+                        <Rectangle Fill="White"/>
+                        <TextBlock Text="G4" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black"/>
+                    </Grid>
+                    <Grid x:Name="A5" Grid.Row="2" Grid.Column="2" Width="100" Height="100" PointerPressed="Button_PointerPressed_1" PointerReleased="Button_PointerReleased_1">
+                        <Rectangle Fill="Purple"/>
+                        <TextBlock Text="A5" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"/>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Border>
     </SwapChainBackgroundPanel>
     <Page.BottomAppBar>
         <AppBar Padding="10,0,10,0">
@@ -45,7 +68,7 @@
                 <StackPanel x:Name="LeftPanel" Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Left">
                     <Button x:Name="Previous" Style="{StaticResource PreviousAppBarButtonStyle}" Tag="Previous" AutomationProperties.Name="Previous Color"/>
                 </StackPanel>
-                <StackPanel x:Name="RightPanel" Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right">
+                <StackPanel x:Name="RightPanel" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,-16,0,16">
                     <Button x:Name="Next" Style="{StaticResource NextAppBarButtonStyle}" Tag="Next" AutomationProperties.Name="Next Color"/>
                 </StackPanel>
             </Grid>

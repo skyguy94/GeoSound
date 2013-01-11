@@ -1,5 +1,6 @@
 #pragma once
-#include "Oscillator.h"
+
+#include "IOscillator.h"
 
 class SineWaveOscillator sealed : public IOscillator
 {

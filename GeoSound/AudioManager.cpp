@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Oscillator.h"
+#include "IOscillator.h"
 #include "AudioManager.h"
 #include "IndividualSound.h"
 #include "Mixer.h"
@@ -51,7 +51,7 @@ void AudioManager::AddSound(unique_ptr<IOscillator> oscillator)
 	HRESULT hr = XAudio2->CreateSourceVoice(&sound->Output, &wfx);
 	if (FAILED(hr)) throw Platform::Exception::CreateException(hr);
 
-	auto sample = oscillator->GenerateSample(1.0f, 44100);
+	sound->Buffer = oscillator->GenerateSample(1.0f, 44100);
 
 	XAUDIO2_BUFFER buffer;
 	ZeroMemory(&buffer, sizeof(XAUDIO2_BUFFER));
@@ -64,7 +64,7 @@ void AudioManager::AddSound(unique_ptr<IOscillator> oscillator)
 	if (FAILED(hr)) throw Platform::Exception::CreateException(hr);
 
 	sounds.push_back(move(sound));
-	oscillators.push_back(oscillator);
+	oscillators.push_back(move(oscillator));
 
 	std::for_each(sounds.begin(), sounds.end(), [](unique_ptr<IndividualSound>& i){ i->Output->Start(); });
 }

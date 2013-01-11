@@ -13,15 +13,13 @@ using namespace Windows::Foundation::Collections;
 using namespace Windows::UI::Core;
 using namespace Windows::UI::Xaml::Shapes;
 
-WaveRenderer::WaveRenderer(AudioManager* audioManager) :
+WaveRenderer::WaveRenderer(SoundPlayer^ soundPlayer) :
 	renderNeeded_(true),
 	position_(0.0f, 0.0f),
-	audioManager_(audioManager),
+	soundPlayer_(soundPlayer),
 	current_(nullptr)
 
-{
-	audioManager_->Initialize();
-}
+{}
 
 void WaveRenderer::CreateDeviceIndependentResources()
 {
@@ -32,49 +30,73 @@ void WaveRenderer::CreateDeviceResources()
 {
 	DirectXBase::CreateDeviceResources();
 
-	DX::ThrowIfFailed(m_d2dContext->CreateSolidColorBrush(ColorF(ColorF::Black), &blackBrush_));}
+	DX::ThrowIfFailed(m_d2dContext->CreateSolidColorBrush(ColorF(ColorF::Black), &blackBrush_));
+	DX::ThrowIfFailed(m_d2dContext->CreateSolidColorBrush(ColorF(ColorF::Yellow), &yellowBrush_));
+}
 
 void WaveRenderer::CreateWindowSizeDependentResources()
 {
 	DirectXBase::CreateWindowSizeDependentResources();
 }
 
-bool WaveRenderer::HitTest(Windows::Foundation::Point hitTest)
+bool WaveRenderer::HitTest(Windows::Foundation::Point point)
+{
+	auto line = GetLineAt(point);
+	return line != nullptr;
+}
+
+ManagedAudioLine^ WaveRenderer::GetLineAt(Windows::Foundation::Point point)
 {
 	auto epsilon = 10;
-	for (auto line : lines_)
+	for (auto& line : lines_)
 	{
-		auto slope = (line->Y2 - line->Y1)/(line->X2 - line->X1);
-		auto b = line->Y1 - slope*line->X1;
-		auto y3 = slope * hitTest.X + b;
-		return abs(hitTest.Y - y3) <= epsilon;
+		AudioLine tmp(point);
+		tmp.end = line->start;
+
+		auto lineSlope = line->ComputeSlope();
+		auto tmpSlope = tmp.ComputeSlope();
+		auto result = abs(lineSlope - tmpSlope) <= epsilon;
+		if (result)
+		{
+			auto managedLine = ref new ManagedAudioLine();
+			managedLine->Length = line->Length();
+			return managedLine;
+		}
 	}
 
-	return false;
+	return nullptr;
 }
 
 void WaveRenderer::StartLine(Windows::Foundation::Point position)
 {
-	current_ = ref new Line();
-	current_->X1 = position.X;
-	current_->Y1 = position.Y;
-	current_->X2 = position.X;
-	current_->X2 = position.Y;
-	lines_.push_back(current_);
+	current_ = new AudioLine(position);
 }
 
 void WaveRenderer::UpdateLinePosition(Windows::Foundation::Point position)
 {
-	if (current_ == nullptr) return
+	if (current_ == nullptr) return;
 
-	current_->X2  = position.X;
-	current_->Y2 = position.Y;
+	current_->end.x  = position.X;
+	current_->end.y = position.Y;
+
 }
 
 void WaveRenderer::EndLine(Windows::Foundation::Point position)
 {
-	current_->X2  = position.X;
-	current_->Y2 = position.Y;
+	if (current_ == nullptr) return;
+
+	//Short lines should be cancelled.
+	if (current_->Length() > 30)
+	{
+		current_->end.x  = position.X;
+		current_->end.y = position.Y;
+		lines_.push_back(unique_ptr<AudioLine>(current_));
+	}
+	else
+	{
+		delete current_;
+	}
+
 	current_ = nullptr;
 }
 
@@ -86,7 +108,7 @@ void WaveRenderer::Update(float timeTotal, float timeDelta)
 	// Add code to update time dependent objects here.
 }
 
-void WaveRenderer::Render()
+void WaveRenderer::Render() 
 {
 	m_d2dContext->BeginDraw();
 
@@ -94,7 +116,7 @@ void WaveRenderer::Render()
 
 	D2D_POINT_2F pt1, pt2;
  
-	auto graph = audioManager_->GetAudioGraph();
+	auto graph = soundPlayer_->GetAudioGraph();
 
 	pt1.x = 0;
 	pt1.y = 0;
@@ -102,21 +124,31 @@ void WaveRenderer::Render()
 	for(auto i : graph)
 	{
 		pt2.x = x++;
-		pt2.y = i + 250;
+		pt2.y = (i/10 + 250);
  
 		this->m_d2dContext->DrawLine(pt1, pt2, this->blackBrush_.Get(), 2);
  
 		pt1 = pt2;
 	}
 
-	for (auto line : lines_)
+	for (auto& line : lines_)
 	{
-		pt1.x = line->X1;
-		pt1.y = line->Y1;
-		pt2.x = line->X2;
-		pt2.y = line->Y2;
-		this->m_d2dContext->DrawLine(pt1, pt2, this->blackBrush_.Get(), 8);
+		this->m_d2dContext->DrawLine(line->start, line->end, this->blackBrush_.Get(), 8);
+
+		auto slope = (line->end.y - line->start.y)/(line->end.x - line->start.x);
+		auto b = line->end.y - slope*line->end.x;
+		auto y3 = slope * line->end.y + b;
+		auto x3 = y3/slope - b;
+		D2D1_POINT_2F p3;
+		p3.x = x3;
+		p3.y = y3;
 	}
+
+	if (current_ != nullptr)
+	{
+		this->m_d2dContext->DrawLine(current_->start, current_->end, this->yellowBrush_.Get(), 8);
+	}
+
 
 	HRESULT hr = m_d2dContext->EndDraw();
 	if (hr != D2DERR_RECREATE_TARGET)

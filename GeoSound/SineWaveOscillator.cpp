@@ -3,16 +3,12 @@
 
 using std::vector;
 
-using namespace Platform::Collections;
-using namespace Windows::Foundation::Collections;
-
 const double PI  = std::atan(1.0) * 4;
 
 SineWaveOscillator::SineWaveOscillator(int32 frequency, int32 amplitude)
 	: frequency_(frequency),
 	  amplitude_(amplitude)
-{
-}
+{ }
 
 std::vector<int16> SineWaveOscillator::GenerateSample(float32 duration, int32 sampleRate)
 {

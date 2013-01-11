@@ -1,7 +1,7 @@
 #pragma once
-
-#include "Oscillator.h"
 #include "IndividualSound.h"
+
+class IOscillator;
 
 class AudioManager
 {

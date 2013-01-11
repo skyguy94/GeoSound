@@ -1,6 +1,4 @@
 ﻿#include "pch.h"
-#include "SineWaveOscillator.h"
-#include "AudioManager.h"
 #include "DirectXPage.xaml.h"
 
 using std::unique_ptr;
@@ -23,11 +21,11 @@ using namespace Windows::Graphics::Display;
 DirectXPage::DirectXPage() :
 	m_renderNeeded(true),
 	m_lastPointValid(false),
-	audioManager_(new AudioManager())
+	soundPlayer_(ref new SoundPlayer())
 {
 	InitializeComponent();
 
-	m_renderer = ref new WaveRenderer(audioManager_.get());
+	m_renderer = ref new WaveRenderer(soundPlayer_);
 
 	m_renderer->Initialize(Window::Current->CoreWindow, SwapChainPanel, DisplayProperties::LogicalDpi);
 
@@ -36,6 +34,18 @@ DirectXPage::DirectXPage() :
 	m_eventToken = CompositionTarget::Rendering::add(ref new EventHandler<Object^>(this, &DirectXPage::OnRendering));
 
 	DataContext = this;
+	
+	soundPlayer_->AddNamedSound("G3", 392.00);
+	soundPlayer_->AddNamedSound("A4", 440.00);
+
+	soundPlayer_->AddNamedSound("B4", 493.88);
+	soundPlayer_->AddNamedSound("C4", 523.25);
+	soundPlayer_->AddNamedSound("D4", 587.33);
+
+	soundPlayer_->AddNamedSound("E4", 659.26);
+	soundPlayer_->AddNamedSound("F4", 701.00);
+	soundPlayer_->AddNamedSound("G4", 783.99);
+	soundPlayer_->AddNamedSound("A5", 880.00);
 
 	m_timer = ref new BasicTimer();
 }
@@ -47,15 +57,23 @@ void DirectXPage::OnPointerPressed(Platform::Object^ sender, Windows::UI::Xaml::
 {
 	m_lastPointValid = true;
 	auto currentPoint = args->GetCurrentPoint(this);
-
 	auto isOver = m_renderer->HitTest(currentPoint->Position);
 	if (isOver)
 	{
-		audioManager_->AddSound(unique_ptr<IOscillator>(new SineWaveOscillator(440, 100)));
+		auto line = m_renderer->GetLineAt(currentPoint->Position);
+		if (line == nullptr) return;
+
+		auto length = line->Length;
+		auto frequency = 1 / (2 * length); 
+		soundPlayer_->PlaySineWave(frequency * 111111 * 9);
+	}
+	else
+	{
+		m_renderer->StartLine(currentPoint->Position);
 	}
 
-	m_renderer->StartLine(currentPoint->Position);
 	m_renderNeeded = true;
+	args->Handled = true;
 }
 
 void DirectXPage::OnPointerMoved(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ args)
@@ -75,6 +93,7 @@ void DirectXPage::OnPointerMoved(Platform::Object^ sender, Windows::UI::Xaml::In
 	{
 		m_lastPointValid = false;
 	}
+	args->Handled = true;
 }
 
 void DirectXPage::OnPointerReleased(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ args)
@@ -84,8 +103,11 @@ void DirectXPage::OnPointerReleased(Platform::Object^ sender, Windows::UI::Xaml:
 
 	m_renderer->EndLine(currentPoint->Position);
 
+	soundPlayer_->StopPlayingAllSounds();
+
 	m_lastPointValid = false;
 	m_renderNeeded = true;
+	args->Handled = true;
 }
 
 void DirectXPage::OnWindowSizeChanged(CoreWindow^ sender, WindowSizeChangedEventArgs^ args)
@@ -113,29 +135,15 @@ void DirectXPage::OnRendering(Platform::Object^ sender, Platform::Object^ args)
 
 void GeoSound::DirectXPage::Button_PointerReleased_1(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e)
 {
-	audioManager_->ClearSounds();
+	soundPlayer_->StopPlayingAllSounds();
 	m_renderNeeded = true;
+	e->Handled = true;
 }
 
 void GeoSound::DirectXPage::Button_PointerPressed_1(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e)
 {
-	Rectangle^rect = dynamic_cast<Rectangle^>(sender); 
-	if (rect->Name == "A4")
-	{
-		audioManager_->AddSound(unique_ptr<IOscillator>(new SineWaveOscillator(440, 100)));
-	}
-	else
-	if (rect->Name == "D4")
-	{
-		audioManager_->AddSound(unique_ptr<IOscillator>(new SineWaveOscillator(440, 100)));
-		audioManager_->AddSound(unique_ptr<IOscillator>(new SineWaveOscillator(600, 100)));
-	}
-	else
-	if (rect->Name == "F4")
-	{
-		audioManager_->AddSound(unique_ptr<IOscillator>(new SineWaveOscillator(440, 100)));
-		audioManager_->AddSound(unique_ptr<IOscillator>(new SineWaveOscillator(600, 100)));
-		audioManager_->AddSound(unique_ptr<IOscillator>(new SineWaveOscillator(780, 100)));
-	}
+	Grid^grid = dynamic_cast<Grid^>(sender);
+	soundPlayer_->PlayNamedSound(grid->Name);
 	m_renderNeeded = true;
+	e->Handled = true;
 }

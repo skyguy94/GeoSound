@@ -8,3 +8,7 @@ Debug/**
 *.suo
 Generated Files/**
 ipch/**
+Release\**
+_NCrunch_GeoSound/GeoSound.crunchsolution.cache
+AppPackages/**
+GeoSound/ISound.h

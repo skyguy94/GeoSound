@@ -7,7 +7,7 @@
 namespace GeoSound
 {
     [Windows::Foundation::Metadata::WebHostHidden]
-	private ref class DirectXPage sealed
+	public ref class DirectXPage sealed
 	{
 	public:
 		DirectXPage();
@@ -27,7 +27,7 @@ namespace GeoSound
 
 		Windows::Foundation::EventRegistrationToken m_eventToken;
 		WaveRenderer^ m_renderer;
-		std::unique_ptr<AudioManager> audioManager_;
+		SoundPlayer^ soundPlayer_;
 
 		bool m_renderNeeded;
 

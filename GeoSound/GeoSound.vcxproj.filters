@@ -44,21 +44,22 @@
     <ClInclude Include="BasicTimer.h" />
     <ClInclude Include="DirectXHelper.h" />
     <ClInclude Include="DirectXBase.h" />
-    <ClInclude Include=".\Oscillator.h" />
     <ClInclude Include="WaveRenderer.h" />
     <ClInclude Include="IndividualSound.h" />
     <ClInclude Include="SineWaveOscillator.h" />
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="Mixer.h" />
     <ClInclude Include="SoundPlayer.h" />
+    <ClInclude Include="IOscillator.h" />
+    <ClInclude Include="AudioLine.h" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="GeoSound_TemporaryKey.pfx" />
+    <Page Include="DirectXPage.xaml" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="DirectXPage.xaml" />
+    <None Include="GeoSound_TemporaryKey.pfx" />
   </ItemGroup>
 </Project>
